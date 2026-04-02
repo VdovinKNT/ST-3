@@ -13,13 +13,13 @@ using ::testing::AtLeast;
 extern Timer* g_pTimer;
 
 class MockTimerClient : public TimerClient {
-public: 
+public:
     MOCK_METHOD(void, Timeout, (), (override));
 };
 
 class StubTimer : public Timer {
 public:
-    void tregister(int, TimerClient*) override {
+    void tregister(int, TimerClient*) {
     }
 };
 
