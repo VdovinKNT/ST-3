@@ -17,9 +17,8 @@ public:
     MOCK_METHOD(void, Timeout, (), (override));
 };
 
-class MockTimer : public Timer {
+class StubTimer : public Timer {
 public:
-    MOCK_METHOD(void, tregister, (int, TimerClient*), (override));
     void tregister(int, TimerClient*) override {
     }
 };
@@ -103,14 +102,15 @@ TEST(IntegrationTest, UnlockStartsTimerAndAdapterThrowsOnTimeout) {
 }
 
 TEST(IntegrationTest, LockPreventsExceptionOnTimeout) {
-    MockTimer mockTimer;
-    g_pTimer = &mockTimer;
+    StubTimer stubTimer;
+    g_pTimer = &stubTimer;
 
     TimedDoor door(5);
     DoorTimerAdapter adapter(door);
     door.unlock();
     door.lock();
     EXPECT_NO_THROW(adapter.Timeout());
+
     g_pTimer = nullptr;
 }
 
