@@ -14,7 +14,7 @@ extern Timer* g_pTimer;
 void enableTestMode(bool);
 
 class MockTimerClient : public TimerClient {
-public: 
+public:
     MOCK_METHOD(void, Timeout, (), (override));
 };
 
