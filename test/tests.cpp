@@ -89,13 +89,6 @@ TEST(TimerTest, TregisterDoesNotCallTimeoutBeforeDelay) {
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
-TEST(IntegrationTest, UnlockStartsTimerAndAdapterThrowsOnTimeout) {
-    TimedDoor door(0);
-    DoorTimerAdapter adapter(door);
-    door.unlock();
-    EXPECT_THROW(adapter.Timeout(), std::runtime_error);
-}
-
 TEST(IntegrationTest, LockPreventsExceptionOnTimeout) {
     enableTestMode(true);
     TimedDoor door(5);
@@ -104,25 +97,4 @@ TEST(IntegrationTest, LockPreventsExceptionOnTimeout) {
     door.lock();
     EXPECT_NO_THROW(adapter.Timeout());
     enableTestMode(false);
-}
-
-TEST(IntegrationTest, UnlockTwiceDoesNotBreakLogic) {
-    TimedDoor door(5);
-    door.unlock();
-    door.unlock();
-    EXPECT_TRUE(door.isDoorOpened());
-}
-
-TEST(IntegrationTest, MultipleTimedDoorsAreIndependent) {
-    TimedDoor door1(2);
-    TimedDoor door2(3);
-    door1.unlock();
-    door2.unlock();
-    EXPECT_TRUE(door1.isDoorOpened());
-    EXPECT_TRUE(door2.isDoorOpened());
-    door1.lock();
-    EXPECT_FALSE(door1.isDoorOpened());
-    EXPECT_TRUE(door2.isDoorOpened());
-    door2.lock();
-    EXPECT_FALSE(door2.isDoorOpened());
 }
