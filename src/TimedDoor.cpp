@@ -6,6 +6,11 @@
 #include <stdexcept>
 
 Timer* g_pTimer = nullptr;
+static bool g_testMode = false;
+
+void enableTestMode(bool enable) {
+    g_testMode = enable;
+}
 
 DoorTimerAdapter::DoorTimerAdapter(TimedDoor& d) : door(d) {}
 
@@ -48,6 +53,9 @@ void Timer::sleep(int seconds) {
 }
 
 void Timer::tregister(int timeout, TimerClient* client) {
+    if (g_testMode) {
+        return;
+    }
     std::thread([this, timeout, client]() {
         sleep(timeout);
         client->Timeout();
