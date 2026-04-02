@@ -5,7 +5,7 @@
 #include <chrono>
 #include <stdexcept>
 
-static Timer* g_pTimer = nullptr;
+Timer* g_pTimer = nullptr;
 
 DoorTimerAdapter::DoorTimerAdapter(TimedDoor& d) : door(d) {}
 

@@ -10,9 +10,18 @@
 using ::testing::_;
 using ::testing::AtLeast;
 
+extern Timer* g_pTimer;
+
 class MockTimerClient : public TimerClient {
-public:
+public: 
     MOCK_METHOD(void, Timeout, (), (override));
+};
+
+class MockTimer : public Timer {
+public:
+    MOCK_METHOD(void, tregister, (int, TimerClient*), (override));
+    void tregister(int, TimerClient*) override {
+    }
 };
 
 TEST(TimedDoorTest, ConstructorSetsTimeout) {
@@ -94,11 +103,15 @@ TEST(IntegrationTest, UnlockStartsTimerAndAdapterThrowsOnTimeout) {
 }
 
 TEST(IntegrationTest, LockPreventsExceptionOnTimeout) {
-    TimedDoor door(0);
+    MockTimer mockTimer;
+    g_pTimer = &mockTimer;
+
+    TimedDoor door(5);
     DoorTimerAdapter adapter(door);
     door.unlock();
     door.lock();
     EXPECT_NO_THROW(adapter.Timeout());
+    g_pTimer = nullptr;
 }
 
 TEST(IntegrationTest, UnlockTwiceDoesNotBreakLogic) {
